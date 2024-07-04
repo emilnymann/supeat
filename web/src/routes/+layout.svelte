@@ -1,4 +1,5 @@
 <script>
+	import '../app.css';
 </script>
 
 <svelte:head>
@@ -14,8 +15,10 @@
 	/>
 </svelte:head>
 
-<style>
-	:global(body) {
+<slot />
+
+<style lang="postcss">
+	:global(html) {
 		font-family: 'Noto Sans', sans-serif;
 	}
 </style>
