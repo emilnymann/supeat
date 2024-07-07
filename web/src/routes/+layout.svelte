@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import '../app.css';
 </script>
 
@@ -15,10 +15,17 @@
 	/>
 </svelte:head>
 
-<slot />
+<main>
+	<slot />
+</main>
 
 <style lang="postcss">
 	:global(html) {
+		@apply bg-surface-container;
 		font-family: 'Noto Sans', sans-serif;
+	}
+
+	main {
+		@apply container;
 	}
 </style>
