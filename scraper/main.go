@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"regexp"
@@ -84,8 +86,13 @@ func main() {
 		}
 	}
 
-	log.Println("Monday:")
-	log.Println("Main dish:", dailyMenusThisWeek[0].MainDish.Items[0])
-	log.Println("Cold cut:", dailyMenusThisWeek[0].ColdCuts.Items[0])
-	log.Println("Salads:", dailyMenusThisWeek[0].Salads.Items[0])
+	log.Println("Finished!")
+
+	jsonResult, err := json.Marshal(dailyMenusThisWeek)
+	if err != nil {
+		fmt.Println("Error marshaling dishes to JSON:", err)
+		os.Exit(1)
+	}
+
+	os.Stdout.Write(jsonResult)
 }
