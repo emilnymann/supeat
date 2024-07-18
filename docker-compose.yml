@@ -1,12 +1,8 @@
 name: supeat
 
 services:
-  web:
-    image: node:22
-    ports:
-      - 51730:5173
-    volumes:
-      - ./web:/app
-      - ./web/node_modules:/app/node_modules
-    working_dir: /app
-    command: bash -c "npm install && npm run dev -- --host"
+  scraper:
+    image: supeat/scraper:latest
+    build:
+      context: ./scraper
+    env_file: ./scraper/.env
