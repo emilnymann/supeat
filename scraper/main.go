@@ -5,49 +5,9 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"regexp"
-	"strings"
-	"unicode"
 
 	"github.com/go-rod/rod"
 )
-
-func formatLine(line string) string {
-	// Remove trailing punctuation
-	line = strings.TrimRightFunc(line, func(r rune) bool {
-		return unicode.IsPunct(r)
-	})
-
-	line = strings.ToLower(line)
-
-	return line
-}
-
-func scrapeWeeklyDishes(page *rod.Page, xpath string) []Dish {
-	dishElements := page.MustElementsX(xpath)[0:10]
-	return parseDishes(dishElements)
-}
-
-func parseDishes(elements rod.Elements) []Dish {
-	dishes := make([]Dish, len(elements)/2)
-	re := regexp.MustCompile(`\s*\r?\n\s*`)
-
-	for i := 0; i < len(elements); i += 2 {
-		title := formatLine(elements[i].MustText())
-		items := re.Split(elements[i+1].MustText(), -1)
-
-		for j := range items {
-			items[j] = formatLine(items[j])
-		}
-
-		dishes[i/2] = Dish{
-			Title: title,
-			Items: items,
-		}
-	}
-
-	return dishes
-}
 
 func main() {
 	logger := log.New(os.Stdout, "Supeat Scraper: ", log.LstdFlags)
