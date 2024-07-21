@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/launcher"
 )
 
 func main() {
@@ -21,20 +22,30 @@ func main() {
 		os.Exit(1)
 	}
 
-	browser := rod.New().MustConnect()
+	logger.Println("looking for browser bin...")
+	browserPath, _ := launcher.LookPath()
+	logger.Println("found browser, launching:", browserPath)
+	url := launcher.New().
+		Bin(browserPath).
+		Headless(true).
+		MustLaunch()
+	logger.Println("launched browser at debug url:", url)
+
+	logger.Println("connecting to browser...")
+	browser := rod.New().ControlURL(url).MustConnect()
 	defer browser.MustClose()
 
-	logger.Println("attempting login...")
-	page, err := attemptLogin(
-		browser,
+	logger.Println("navigating to login page...")
+	page := browser.MustPage("https://app.kanpla.dk/login")
+	page.MustWaitStable()
+
+	logger.Println("attempting login:")
+	attemptLogin(
+		page,
 		&loginEmail,
 		&loginPassword,
 		logger,
 	)
-	if err != nil {
-		logger.Println("failed to login -", err)
-		os.Exit(1)
-	}
 
 	logger.Println("scraping main dishes...")
 	weeklyMainDishes := scrapeWeeklyDishes(page, `//p[text()[contains(., "VARM RET")]]/following-sibling::p`)
